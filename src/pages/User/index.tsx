@@ -35,7 +35,7 @@ const User = () => {
   });
 
   const handleAddUser = async () => {
-    const {confirm_password, ...params} = form.getFieldsValue();
+    const { confirm_password, ...params } = form.getFieldsValue();
     const result = await addUser(params);
     if (result) {
       message.success('新增成功');
@@ -49,7 +49,7 @@ const User = () => {
   const handleDelete = async (item: any) => {
     try {
       const result = await deleteUser({ id: item.id });
-      if (result === true) {
+      if (result.data === true) {
         message.success('删除成功');
         run();
       } else {
@@ -62,13 +62,14 @@ const User = () => {
 
   const handleModify = async () => {
     const id = currentUser.id;
+    const { confirm_password, ...rest } = form.getFieldsValue();
 
     const result = await updateUser({
       id,
-      ...form.getFieldsValue(),
+      ...rest
     });
 
-    if (result === true) {
+    if (result.data === true) {
       message.success('修改成功');
       setModalOpen(false);
       run();
@@ -86,7 +87,7 @@ const User = () => {
       title: '操作',
       dataIndex: 'actions',
       key: 'actions',
-      render: (record: any) => {
+      render: (_: any, record: any) => {
         return (
           <Space>
             <Popconfirm
@@ -103,8 +104,8 @@ const User = () => {
               type="primary"
               onClick={async () => {
                 const result = await fetchUserInfo({ id: record.id });
-                setCurrentUser(result);
-                form.setFieldsValue(result);
+                setCurrentUser(result.data);
+                form.setFieldsValue({ ...result.data, confirm_password: result.data.password });
                 setAction('modify');
                 setModalOpen(true);
               }}
@@ -140,7 +141,7 @@ const User = () => {
           bordered
         />
         <Modal
-          title="添加用户"
+          title={action === 'add' ? '添加用户' : '修改用户信息'}
           open={ModalOpen}
           onCancel={() => {
             setModalOpen(false);
