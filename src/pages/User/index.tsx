@@ -35,7 +35,8 @@ const User = () => {
   });
 
   const handleAddUser = async () => {
-    const result = await addUser(form.getFieldsValue());
+    const {confirm_password, ...params} = form.getFieldsValue();
+    const result = await addUser(params);
     if (result) {
       message.success('新增成功');
       setModalOpen(false);
