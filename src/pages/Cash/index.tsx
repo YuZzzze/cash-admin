@@ -1,17 +1,18 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { useRequest } from 'ahooks';
 import {
   Button,
+  Col,
   Form,
   Input,
   Modal,
   Popconfirm,
   Radio,
+  Row,
   Space,
   Table,
   message,
 } from 'antd';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { expendSeivece, incomeSeivece } from './service';
 
 const serviceMeun = {
@@ -26,25 +27,28 @@ const radioOptions = [
 
 const User = () => {
   const [currentType, setCurrentType] = useState<'income' | 'expend'>('income');
-  const [userList, setUserList] = useState([]);
+  const [cashList, setCashList] = useState([]);
   const [ModalOpen, setModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>();
   const [action, setAction] = useState('');
   const [form] = Form.useForm();
   const currentService = useMemo(() => serviceMeun[currentType], [currentType]);
 
-  const { loading, run } = useRequest(currentService.getCashList, {
-    onSuccess: (data) => {
-      setUserList(data.data);
-    },
-  });
+  const getCashList = async () => {
+    const result: any = currentService.getCashList();
+    setCashList(result.data);
+  };
+
+  useEffect(() => {
+    getCashList();
+  }, [currentType]);
 
   const handleAddUser = async () => {
     const result = await currentService.addCash(form.getFieldsValue());
     if (result) {
       message.success('新增成功');
       setModalOpen(false);
-      run();
+      getCashList();
     } else {
       message.error('新增失败');
     }
@@ -55,7 +59,7 @@ const User = () => {
       const result = await currentService.deleteCash({ id: item.id });
       if (result === true) {
         message.success('删除成功');
-        run();
+        getCashList();
       } else {
         message.error('删除失败');
       }
@@ -75,7 +79,7 @@ const User = () => {
     if (result === true) {
       message.success('修改成功');
       setModalOpen(false);
-      run();
+      getCashList();
     } else {
       message.error('修改失败');
     }
@@ -123,20 +127,20 @@ const User = () => {
   return (
     <>
       <PageContainer ghost>
-        <Radio.Group
-          options={radioOptions}
-          onChange={(e: any) => {
-            setCurrentType(e.target.value);
-          }}
-          value={currentType}
-          optionType="button"
-        />
-        <Table
-          dataSource={userList}
-          columns={columns}
-          loading={loading}
-          bordered
-        />
+        <Row style={{ marginBottom: 16 }}>
+          <Col>
+            <Radio.Group
+              options={radioOptions}
+              onChange={(e: any) => {
+                setCurrentType(e.target.value);
+              }}
+              value={currentType}
+              optionType="button"
+            />
+          </Col>
+        </Row>
+
+        <Table dataSource={cashList} columns={columns} bordered />
         <Modal
           title="添加用户"
           open={ModalOpen}
