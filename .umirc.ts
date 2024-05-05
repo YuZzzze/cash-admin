@@ -29,6 +29,11 @@ export default defineConfig({
       path: '/user',
       component: './User',
     },
+    {
+      name: '账单管理',
+      path: '/cash',
+      component: './Cash',
+    },
   ],
   npmClient: 'pnpm',
 });

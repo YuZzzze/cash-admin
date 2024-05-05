@@ -1,7 +1,7 @@
 import { request } from '@umijs/max';
 export const incomeSeivece = {
   async getCashList() {
-    return request('/api/income');
+    return request('/income/list');
   },
   async addCash(params: any) {
     return request('/income/add', {
@@ -10,37 +10,51 @@ export const incomeSeivece = {
     });
   },
   async deleteCash(params: any) {
-    return request(`/api/income`, {
-      method: 'DELETE',
+    return request('/income/list', {
+      method: 'POST',
+      data: params,
     });
   },
   async updateCash(params: any) {
-    return request(`/api/income`, {
-      method: 'PUT',
+    return request('/income/update', {
+      method: 'POST',
       data: params,
+    });
+  },
+  async getCash(params: any) {
+    return request('/income/get', {
+      method: 'GET',
+      params: params,
     });
   },
 };
 
 export const expendSeivece = {
   async getCashList() {
-    return await request('/api/expend');
+    return await request('/expend/list');
   },
-  async addCash(data: any) {
-    return request('/api/expend', {
+  async addCash(params: any) {
+    return request('/expend/list', {
       method: 'POST',
-      data,
+      data: params,
     });
   },
-  async deleteCash(id: number) {
-    return request(`/api/expend/${id}`, {
-      method: 'DELETE',
+  async deleteCash(params: any) {
+    return request('/expend/delete', {
+      method: 'POST',
+      data: params,
     });
   },
-  async updateCash(id: any, data: any) {
-    return request(`/api/expend/${id}`, {
-      method: 'PUT',
-      data,
+  async updateCash(params: any) {
+    return request('/expend/update', {
+      method: 'POST',
+      data: params,
+    });
+  },
+  async getCash(params: any) {
+    return request('/expend/get', {
+      method: 'GET',
+      params: params,
     });
   },
 };

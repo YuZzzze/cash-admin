@@ -6,6 +6,7 @@ import {
   Input,
   Modal,
   Popconfirm,
+  Radio,
   Space,
   Table,
   message,
@@ -17,6 +18,11 @@ const serviceMeun = {
   income: incomeSeivece,
   expend: expendSeivece,
 };
+
+const radioOptions = [
+  { label: '收入', value: 'income' },
+  { label: '支出', value: 'expend' },
+];
 
 const User = () => {
   const [currentType, setCurrentType] = useState<'income' | 'expend'>('income');
@@ -77,9 +83,8 @@ const User = () => {
 
   const columns = [
     { title: '用户名', dataIndex: 'username', key: 'username' },
-    { title: '密码', dataIndex: 'password', key: 'password' },
-    { title: '年龄', dataIndex: 'age', key: 'age' },
-    { title: '手机号码', dataIndex: 'phone', key: 'phone' },
+    { title: '金额', dataIndex: 'money', key: 'money' },
+    { title: '时间', dataIndex: 'time', key: 'time' },
     {
       title: '操作',
       dataIndex: 'actions',
@@ -100,7 +105,7 @@ const User = () => {
             <Button
               type="primary"
               onClick={async () => {
-                const result = await fetchUserInfo({ id: record.id });
+                const result = await currentService.getCash({ id: record.id });
                 setCurrentUser(result);
                 form.setFieldsValue(result);
                 setAction('modify');
@@ -118,6 +123,14 @@ const User = () => {
   return (
     <>
       <PageContainer ghost>
+        <Radio.Group
+          options={radioOptions}
+          onChange={(e: any) => {
+            setCurrentType(e.target.value);
+          }}
+          value={currentType}
+          optionType="button"
+        />
         <Table
           dataSource={userList}
           columns={columns}
