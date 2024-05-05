@@ -14,6 +14,7 @@ import {
 } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { expendSeivece, incomeSeivece } from './service';
+import dayjs from 'dayjs'
 
 const serviceMeun = {
   income: incomeSeivece,
@@ -35,7 +36,8 @@ const User = () => {
   const currentService = useMemo(() => serviceMeun[currentType], [currentType]);
 
   const getCashList = async () => {
-    const result: any = currentService.getCashList();
+    const result: any = await currentService.getCashList();
+    console.log(result, 'result')
     setCashList(result.data);
   };
 
@@ -88,7 +90,12 @@ const User = () => {
   const columns = [
     { title: '用户名', dataIndex: 'username', key: 'username' },
     { title: '金额', dataIndex: 'money', key: 'money' },
-    { title: '时间', dataIndex: 'time', key: 'time' },
+    {
+      title: '时间', dataIndex: 'time', key: 'time',
+      render: (_: any, record: any) => {
+        return dayjs(record.time).format('YYYY-MM-DD HH:mm:ss');
+      },
+    },
     {
       title: '操作',
       dataIndex: 'actions',
